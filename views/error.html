@@ -1,0 +1,8 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ exception.getCode() }}{% endblock %}
+
+{% block content %}
+    <h1>Ошибка</h1>
+    <p> {{ exception.getMessage() }} {% if exception.getCode() > 0 %}({{ exception.getCode() }}){% endif %}
+{% endblock %}
