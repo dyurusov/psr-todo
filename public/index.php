@@ -17,6 +17,7 @@ $containerBuilder->addDefinitions([
         ->constructor('views'),
     App\Router\RouterInterface::class => DI\create(App\Router\Router::class)
         ->constructor(DI\get(Psr\Container\ContainerInterface::class)),
+    App\Services\Auth\AuthServiceInterface::class => DI\create(App\Services\Auth\AuthService::class),
     App\Repositories\TaskRepositoryInterface::class => DI\create(App\Repositories\TaskRepository::class)
         ->constructor(DI\get(PDO::class)),
     PDO::class => DI\factory(function ($dsn = null, $user = null, $pass = null, $options = null): PDO {
@@ -59,8 +60,12 @@ $app = new QueueRequestHandler($container->get(App\Error\ErrorHandler::class));
 // routing
 $router = $container->get(App\Router\RouterInterface::class);
 $map = $router->getMap();
-$map->get(App\Actions\IndexAction::class, '/');
-$map->get(App\Actions\ReadAction::class, '/{id}');
+$map->get(App\Actions\HomeAction::class, '/');
+$map->get(App\Actions\TaskActions\IndexAction::class, '/tasks');
+$map->get(App\Actions\Auth\LoginFormAction::class, '/login');
+$map->post(App\Actions\Auth\LoginAction::class, '/login');
+$map->post(App\Actions\Auth\LogoutAction::class, '/logout');
+$map->get(App\Actions\TaskActions\ReadAction::class, '/tasks/{id}');
 $app->add(new RoutingMiddleware($router));
 
 $response = $app->handle(ServerRequestFactory::fromGlobals());

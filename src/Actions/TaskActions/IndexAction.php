@@ -1,24 +1,21 @@
 <?php
 
-namespace App\Actions;
+namespace App\Actions\TaskActions;
 
+use App\Actions\AbstractAction;
 use App\Router\RouterInterface;
-use App\Router\RouterTrait;
+use App\Services\SessionService;
 use App\Services\TaskService;
 use App\Services\TaskServiceTrait;
 use App\Template\TemplateEngineInterface;
-use App\Template\TemplateTrait;
-use Laminas\Diactoros\Response;
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 
-class IndexAction implements RequestHandlerInterface
+class IndexAction extends AbstractAction
 {
-    use TemplateTrait;
     use TaskServiceTrait;
-    use RouterTrait;
+
+    protected string $view = 'index';
 
     protected string $pageParam = 'page';
     protected string $limitParam = 'perPage';
@@ -28,25 +25,22 @@ class IndexAction implements RequestHandlerInterface
     protected int $defaultLimit = 3;
     protected int $defaultPage = 0;
 
-    public function __construct(TemplateEngineInterface $templateEngine, TaskService $taskService, RouterInterface $router)
+    public function __construct(TemplateEngineInterface $templateEngine, TaskService $taskService, RouterInterface $router, SessionService $sessionService)
     {
         $this->setTemplateEngine($templateEngine);
         $this->setTaskService($taskService);
         $this->setRouter($router);
+        $this->setSessionService($sessionService);
     }
 
-    public function handle(ServerRequestInterface $request): ResponseInterface
+    protected function getRenderParams(ServerRequestInterface $request): array
     {
         list ($limit, $page, $sort, $maxPage) = $this->parseQueryParams($request->getQueryParams());
-        $response = new Response();
-        $response->getBody()
-            ->write($this->render('index', [
-                'tasks' => $this->taskService->getMany($page * $limit, $limit, $sort),
-                'pager' => $this->getPagerData($page, $maxPage, $sort),
-                'columns' => $this->getColumnsData($sort),
-                'isAdmin' => false,
-            ]));
-        return $response;
+        return array_merge(parent::getRenderParams($request), [
+            'tasks' => $this->taskService->getMany($page * $limit, $limit, $sort),
+            'pager' => $this->getPagerData($page, $maxPage, $sort),
+            'columns' => $this->getColumnsData($sort),
+        ]);
     }
 
     protected function parseQueryParams(array $queryParams): array

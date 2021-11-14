@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block title %}Вход для Админа{% endblock %}
+
+{% block content %}
+    <form method="post" action="{{ loginUrl }}">
+        <div class="row mb-3">
+            <div class="col-sm-4 offset-sm-3">
+                <h2>Вход</h2>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="user" class="col-sm-3 col-form-label">Имя пользователя</label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" id="user" name="user">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="pass" class="col-sm-3 col-form-label">Пароль</label>
+            <div class="col-sm-4">
+                <input type="password" class="form-control" id="pass" name="pass">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-sm-4 offset-sm-3">
+                <button type="submit" class="btn btn-primary">Войти</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

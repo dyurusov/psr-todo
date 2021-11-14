@@ -10,9 +10,38 @@
     {% endblock %}
 </head>
 <body>
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="{{ urls.home }}">
+                <i class="bi bi-emoji-sunglasses-fill"></i>
+            </a>
+            <ul class="nav justify-content-end">
+                {% if isAdmin %}
+                    <li class="nav-item">
+                        <a class="nav-link disabled">Admin</a>
+                    </li>
+                    <li class="nav-item">
+                        <form method="post" action="{{ urls.logout }}">
+                            <button class="btn btn-link">Выход</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ urls.loginForm }}">Вход</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
     <div class="container">
         <div class="row">
             <div class="col">
+                {% if message %}
+                    <div class="alert alert-{{message.type}} alert-dismissible fade show" role="alert">
+                        {{ message.text }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endif %}
                 {% block content %}{% endblock %}
             </div>
         </div>
