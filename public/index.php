@@ -65,7 +65,6 @@ $map->get(App\Actions\TaskActions\IndexAction::class, '/tasks');
 $map->get(App\Actions\Auth\LoginFormAction::class, '/login');
 $map->post(App\Actions\Auth\LoginAction::class, '/login');
 $map->post(App\Actions\Auth\LogoutAction::class, '/logout');
-$map->get(App\Actions\TaskActions\ReadAction::class, '/tasks/{id}');
 $app->add(new RoutingMiddleware($router));
 
 $response = $app->handle(ServerRequestFactory::fromGlobals());

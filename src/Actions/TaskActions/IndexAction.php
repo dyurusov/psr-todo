@@ -15,7 +15,7 @@ class IndexAction extends AbstractAction
 {
     use TaskServiceTrait;
 
-    protected string $view = 'index';
+    protected string $view = 'tasks/index';
 
     protected string $pageParam = 'page';
     protected string $limitParam = 'perPage';
