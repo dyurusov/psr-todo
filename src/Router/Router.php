@@ -33,4 +33,12 @@ class Router implements RouterInterface
             ? new Route($matched, $this->container->get($matched->name))
             : new Route();
     }
+
+    public function generateUrl(string $routeName, array $params = [], array $queryParams = []): string
+    {
+        $routeHelper = $this->routerContainer->newRouteHelper();
+        $path = $routeHelper($routeName, $params);
+        $queryString =  http_build_query($queryParams);
+        return $path . (empty($queryString) ? '' : "?$queryString");
+    }
 }

@@ -12,6 +12,7 @@
         "twig/twig": "^3.3",
         "php-di/php-di": "^6.3",
         "psr/http-server-middleware": "^1.0",
-        "aura/router": "^3.1"
+        "aura/router": "^3.1",
+        "ext-pdo": "*"
     }
 }
