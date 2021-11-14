@@ -28,17 +28,10 @@ abstract class AbstractAction implements RequestHandlerInterface
 
     protected function getRenderParams(ServerRequestInterface $request): array
     {
-        return [
-            'urls' => [
-                'home' => $this->generateUrl(HomeAction::class),
-                'loginForm' => $this->generateUrl(Auth\LoginFormAction::class),
-                'logout' => $this->generateUrl(Auth\LogoutAction::class),
-            ],
-            'isAdmin' => $this->sessionService->getIsAdmin(),
-            'message' => $this->sessionService->getFlash(),
-
-//            'isAdmin' => true,
-        ];
+        return array_merge(
+            $this->getRouterRenderParams(),
+            $this->getSessionRenderParams()
+        );
     }
 
 }

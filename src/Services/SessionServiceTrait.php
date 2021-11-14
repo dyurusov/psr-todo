@@ -10,4 +10,12 @@ trait SessionServiceTrait
     {
         $this->sessionService = $sessionService;
     }
+
+    protected function getSessionRenderParams(): array
+    {
+        return [
+            'isAdmin' => $this->sessionService->getIsAdmin(),
+            'message' => $this->sessionService->getFlash(),
+        ];
+    }
 }
