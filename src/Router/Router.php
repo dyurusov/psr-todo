@@ -11,18 +11,13 @@ class Router implements RouterInterface
 {
     private ContainerInterface $container;
     private RouterContainer $routerContainer;
+    private string $baseUrl;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, string $baseUrl = '')
     {
         $this->container = $container;
-
-        // TODO: implement baseUrl
         $this->routerContainer = new RouterContainer();
-    }
-
-    public function getMap()
-    {
-        return $this->routerContainer->getMap();
+        $this->baseUrl = rtrim($baseUrl, ' /');
     }
 
     public function match(ServerRequestInterface $request): RouteInterface
@@ -40,5 +35,11 @@ class Router implements RouterInterface
         $path = $routeHelper($routeName, $params);
         $queryString =  http_build_query($queryParams);
         return $path . (empty($queryString) ? '' : "?$queryString");
+    }
+
+    public function addRoute(string $method, string $name, string $path)
+    {
+        $map = $this->routerContainer->getMap();;
+        $map->$method($name, "{$this->baseUrl}$path");
     }
 }

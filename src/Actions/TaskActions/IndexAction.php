@@ -36,6 +36,7 @@ class IndexAction extends AbstractAction
 
     protected function getRenderParams(ServerRequestInterface $request): array
     {
+        $this->sessionService->clearFormState();
         list ($limit, $page, $sort, $maxPage) = $this->parseQueryParams($request->getQueryParams());
         return array_merge(parent::getRenderParams($request), [
             'tasks' => array_map(function ($task) {

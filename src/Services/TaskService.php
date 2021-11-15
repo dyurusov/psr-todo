@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Error\Exceptions\NotFoundException;
 use App\Models\Task;
 use App\Repositories\TaskRepositoryInterface;
 
@@ -25,7 +26,11 @@ class TaskService
     }
 
     public function getOne($id) {
-        return $this->mapper($this->repo->getOne($id));
+        $task = $this->repo->getOne($id);
+        if (!$task) {
+            throw new NotFoundException();
+        }
+        return $this->mapper($task);
     }
 
     public function create(array $data)
@@ -81,7 +86,7 @@ class TaskService
 
         if (!$propsToValidate || in_array('email', $propsToValidate)) {
             if (!$this->validationService->isEmail($data['email'] ?? '')) {
-                $errors[] = 'Не верный email';
+                $errors[] = 'Неверный e-mail';
             }
         }
 

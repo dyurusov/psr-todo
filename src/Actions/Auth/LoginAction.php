@@ -36,7 +36,7 @@ class LoginAction extends AbstractAction
                 ->withStatus(302);
         } catch (\DomainException $e) {
             $this->sessionService->clearIsAdmin();
-            $this->sessionService->setErrorFlash('Введены не верное имя или пароль!');
+            $this->sessionService->setErrorFlash('Введены неверное имя или пароль!');
             return (new Response())
                 ->withHeader('Location', $this->generateUrl(LoginFormAction::class))
                 ->withStatus(302);
