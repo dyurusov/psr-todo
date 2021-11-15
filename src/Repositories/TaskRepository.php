@@ -23,9 +23,41 @@ class TaskRepository implements TaskRepositoryInterface
         return $result;
     }
 
+    public function getOne($id)
+    {
+        $query = $this->dbConnection
+            ->prepare('SELECT * FROM Tasks WHERE id=:id');
+        $query->bindValue(':id', $id);
+        $query->execute();
+        $record = $query->fetch(\PDO::FETCH_ASSOC);
+        return $record ? (new Task($record)) : null;
+    }
+
     public function count(): int
     {
         return $this->dbConnection->query("SELECT COUNT(*) FROM Tasks")->fetchColumn();
+    }
+
+    public function save(Task $task)
+    {
+        $query = $this->dbConnection->prepare("
+            UPDATE Tasks
+            SET
+                user=:user,
+                email=:email,
+                description=:description,
+                edited=:edited,
+                done=:done
+            WHERE
+                id=:id
+        ");
+        $query->bindValue(':id', $task->id);
+        $query->bindValue(':user', $task->user);
+        $query->bindValue(':email', $task->email);
+        $query->bindValue(':description', $task->description);
+        $query->bindValue(':edited', $task->edited);
+        $query->bindValue(':done', $task->done);
+        $query->execute();
     }
 
     private function _composeManySql(int $offset, int $limit, array $sort): string

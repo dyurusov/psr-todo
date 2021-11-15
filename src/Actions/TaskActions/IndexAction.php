@@ -16,6 +16,7 @@ class IndexAction extends AbstractAction
     use TaskServiceTrait;
 
     protected string $view = 'tasks/index';
+    protected bool $rememberDestination = true;
 
     protected string $pageParam = 'page';
     protected string $limitParam = 'perPage';
@@ -37,7 +38,10 @@ class IndexAction extends AbstractAction
     {
         list ($limit, $page, $sort, $maxPage) = $this->parseQueryParams($request->getQueryParams());
         return array_merge(parent::getRenderParams($request), [
-            'tasks' => $this->taskService->getMany($page * $limit, $limit, $sort),
+            'tasks' => array_map(function ($task) {
+                $task['updateHref'] = $this->generateUrl(UpdateFormAction::class, [ 'id' => $task['id'] ]);
+                return $task;
+            }, $this->taskService->getMany($page * $limit, $limit, $sort)),
             'pager' => $this->getPagerData($page, $maxPage, $sort),
             'columns' => $this->getColumnsData($sort),
         ]);

@@ -62,6 +62,8 @@ $router = $container->get(App\Router\RouterInterface::class);
 $map = $router->getMap();
 $map->get(App\Actions\HomeAction::class, '/');
 $map->get(App\Actions\TaskActions\IndexAction::class, '/tasks');
+$map->get(App\Actions\TaskActions\UpdateFormAction::class, '/tasks/{id}/update');
+$map->post(App\Actions\TaskActions\UpdateAction::class, '/tasks/{id}/update');
 $map->get(App\Actions\Auth\LoginFormAction::class, '/login');
 $map->post(App\Actions\Auth\LoginAction::class, '/login');
 $map->post(App\Actions\Auth\LogoutAction::class, '/logout');

@@ -39,6 +39,9 @@
                 <th scope="col">
                     Отредактировано администратором
                 </th>
+            <th scope="col">
+                Действия
+            </th>
             {% endif %}
         </tr>
         </thead>
@@ -48,9 +51,12 @@
                     <td>{{ task.user }}</td>
                     <td>{{ task.email }}</td>
                     <td>{{ task.description }}</td>
-                    <td><i class="bi {% if task.done %}bi-check text-success{% endif %}"></i></td>
+                    <td><i class="bi {% if task.done %}bi-check2 text-success{% endif %}"></i></td>
                     {% if isAdmin %}
-                        <td><i class="bi {% if task.edited %}bi-check text-danger{% endif %}"></i></td>
+                        <td><i class="bi {% if task.edited %}bi-check2 text-danger{% endif %}"></i></td>
+                        <td>
+                            <a class="btn btn-link" href="{{task.updateHref}}" title="Изменить описание"><i class="bi bi-pencil-square text-danger"></i></a>
+                        </td>
                     {% endif %}
                 </tr>
             {% endfor %}

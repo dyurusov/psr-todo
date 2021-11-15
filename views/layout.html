@@ -38,7 +38,15 @@
             <div class="col">
                 {% if message %}
                     <div class="alert alert-{{message.type}} alert-dismissible fade show" role="alert">
-                        {{ message.text }}
+                        {% if message.text is iterable %}
+                            <ul class="list-unstyled mb-0">
+                                {% for text in message.text %}
+                                    <li>{{ text }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            {{ message.text }}
+                        {% endif %}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 {% endif %}
