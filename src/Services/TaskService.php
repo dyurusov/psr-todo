@@ -9,13 +9,15 @@ use App\Repositories\TaskRepositoryInterface;
 class TaskService
 {
     use ValidationServiceTrait;
+    use IdentityServiceTrait;
 
     private TaskRepositoryInterface $repo;
 
-    public function __construct(TaskRepositoryInterface $repo, ValidationService $validationService)
+    public function __construct(TaskRepositoryInterface $repo, ValidationService $validationService, IdentityService $identityService)
     {
         $this->repo = $repo;
         $this->setValidationService($validationService);
+        $this->setIdentityService($identityService);
     }
 
     public function getMany(int $offset = 0, int $limit = 0, array $sort = ['id' => true]): array {
@@ -26,7 +28,21 @@ class TaskService
         return $this->mapper($this->repo->getOne($id));
     }
 
-    public function save(array $data)
+    public function create(array $data)
+    {
+        $data = $this->purify($data);
+        $data['id'] = $this->getNewIdentifier();
+        $errors = $this->validate($data);
+        if (!empty($errors)) {
+            throw new \DomainException(json_encode($errors));
+        }
+        $task = new Task($data);
+        if (!$this->repo->save($task)) {
+            throw new \DomainException('DB save error');
+        };
+    }
+
+        public function update(array $data)
     {
         $data = $this->purify($data);
         $errors = $this->validate($data);
@@ -34,7 +50,9 @@ class TaskService
             throw new \DomainException(json_encode($errors));
         }
         $task = new Task($data);
-        $this->repo->save($task);
+        if (!$this->repo->save($task)) {
+            throw new \DomainException('DB save error');
+        };
     }
 
     public function validate(array $data, array $propsToValidate = null): array

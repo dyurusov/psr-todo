@@ -4,8 +4,6 @@ namespace App\Actions\TaskActions;
 
 use App\Actions\AbstractAction;
 use App\Actions\HomeAction;
-use App\Error\Exceptions\ForbiddenException;
-use App\Error\Exceptions\NotFoundException;
 use App\Router\RouterInterface;
 use App\Services\SessionService;
 use App\Services\TaskService;
@@ -16,7 +14,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 
-class UpdateAction extends AbstractAction
+class CreateAction extends AbstractAction
 {
     use TaskServiceTrait;
 
@@ -30,35 +28,20 @@ class UpdateAction extends AbstractAction
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        if (!$this->hasAccess($request)) {
-            throw new ForbiddenException();
-        }
-
         $requestBody = $request->getParsedBody();
 
-        $errors = $this->taskService->validate($requestBody, ['description']);
+        $errors = $this->taskService->validate($requestBody, ['user', 'email', 'description']);
         if ($errors) {
             $this->sessionService->setErrorFlash($errors);
             $this->sessionService->setFormState($requestBody);
             return (new Response())
-                ->withHeader('Location', $this->generateUrl(UpdateFormAction::class, [
+                ->withHeader('Location', $this->generateUrl(CreateFormAction::class, [
                     'id' => $request->getAttribute('id'),
                 ]))
                 ->withStatus(302);
         }
 
-        $task = $this->taskService->getOne($request->getAttribute('id', null));
-        if (!$task) {
-            throw new NotFoundException();
-        }
-
-        $data = $this->taskService->purify($requestBody);
-        if (!$task['edited'] && ($task['description'] !== $data['description'])) {
-            $task['edited'] = true;
-        }
-        $task['description'] = $data['description'];
-        $task['done'] = $data['done'];
-        $this->taskService->update($task);
+        $this->taskService->create($requestBody);
 
         $this->sessionService->clearFormState();
         $this->sessionService->setSuccessFlash('Задача успешно сохранена!');
@@ -66,10 +49,5 @@ class UpdateAction extends AbstractAction
         return (new Response())
             ->withHeader('Location', $destination ?: $this->generateUrl(HomeAction::class))
             ->withStatus(302);
-    }
-
-    protected function hasAccess(ServerRequestInterface $request): bool
-    {
-        return $this->sessionService->getIsAdmin();
     }
 }

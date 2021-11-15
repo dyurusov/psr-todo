@@ -44,6 +44,7 @@ class IndexAction extends AbstractAction
             }, $this->taskService->getMany($page * $limit, $limit, $sort)),
             'pager' => $this->getPagerData($page, $maxPage, $sort),
             'columns' => $this->getColumnsData($sort),
+            'createUrl' => $this->generateUrl(CreateFormAction::class),
         ]);
     }
 

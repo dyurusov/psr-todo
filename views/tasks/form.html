@@ -3,22 +3,22 @@
 {% block title %}Изменение задачи{% endblock %}
 
 {% block content %}
-    <form method="post" action="{{ loginUrl }}">
+    <form method="post" >
         <div class="row mb-3">
             <div class="col-sm-4 offset-sm-3">
-                <h2>Изменение задания</h2>
+                <h2>{% if isCreating %}Создание{% else %}Изменение{% endif %} задания</h2>
             </div>
         </div>
         <div class="row mb-3">
             <label for="user" class="col-sm-3 col-form-label">Имя пользователя</label>
             <div class="col-sm-4">
-                <input type="text" class="form-control" id="user" name="user" readonly value="{{ task.user }}">
+                <input type="text" class="form-control" id="user" name="user" {% if not isCreating %}readonly{% endif %} value="{{ task.user }}">
             </div>
         </div>
         <div class="row mb-3">
             <label for="email" class="col-sm-3 col-form-label">E-mail</label>
             <div class="col-sm-4">
-                <input type="email" class="form-control" id="email" name="email" readonly value="{{ task.email }}">
+                <input type="email" class="form-control" id="email" name="email" {% if not isCreating %}readonly{% endif %} value="{{ task.email }}">
             </div>
         </div>
         <div class="row mb-3">
@@ -27,16 +27,18 @@
                 <textarea class="form-control" id="description" rows="5" name="description">{{ task.description }}</textarea>
             </div>
         </div>
-        <div class="row mb-3">
-            <div class="col-sm-4 offset-sm-3">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="done" name="done" value="1" {% if task.done %}checked{% endif %}>
-                    <label class="form-check-label" for="done">
-                        Выполнено
-                    </label>
+        {% if not isCreating %}
+            <div class="row mb-3">
+                <div class="col-sm-4 offset-sm-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="done" name="done" value="1" {% if task.done %}checked{% endif %}>
+                        <label class="form-check-label" for="done">
+                            Выполнено
+                        </label>
+                    </div>
                 </div>
             </div>
-        </div>
+        {% endif %}
         <div class="row mb-3">
             <div class="col-sm-4 offset-sm-3">
                 <button type="submit" class="btn btn-primary">Сохранить</button>
